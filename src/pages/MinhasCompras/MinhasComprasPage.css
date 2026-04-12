@@ -1,0 +1,163 @@
+.minhas-compras-page {
+  color-scheme: light;
+  --mc-bg: #f0f2f5;
+  --mc-card: #ffffff;
+  --mc-border: #e5e7eb;
+  --mc-text: #4b5563;
+  --mc-heading: #111827;
+  --mc-primary: #2563eb;
+
+  min-height: 100svh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 28px 24px 48px;
+  background: var(--mc-bg);
+  color: var(--mc-text);
+  text-align: left;
+}
+
+.minhas-compras-header {
+  max-width: 880px;
+  margin: 0 auto 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.minhas-compras-titulo {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--mc-heading);
+  letter-spacing: -0.02em;
+}
+
+.minhas-compras-btn-atualizar {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mc-heading);
+  background: var(--mc-card);
+  border: 1px solid var(--mc-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.minhas-compras-btn-atualizar:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.minhas-compras-btn-atualizar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.minhas-compras-main {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.minhas-compras-erro,
+.minhas-compras-aviso {
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  margin-bottom: 16px;
+}
+
+.minhas-compras-vazio {
+  margin: 0;
+  padding: 32px 20px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--mc-text);
+  background: var(--mc-card);
+  border: 1px dashed var(--mc-border);
+  border-radius: 12px;
+}
+
+.minhas-compras-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.minhas-compras-card {
+  background: var(--mc-card);
+  border: 1px solid var(--mc-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.minhas-compras-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--mc-border);
+  font-size: 0.9rem;
+  color: var(--mc-text);
+}
+
+.minhas-compras-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.minhas-compras-sep {
+  margin: 0 6px;
+  color: #9ca3af;
+}
+
+.minhas-compras-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--mc-heading);
+}
+
+.minhas-compras-itens {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.minhas-compras-itens th,
+.minhas-compras-itens td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.minhas-compras-itens th {
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+}
+
+.minhas-compras-itens .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.minhas-compras-sem-itens {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}

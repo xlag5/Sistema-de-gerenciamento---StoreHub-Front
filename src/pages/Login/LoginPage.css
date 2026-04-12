@@ -1,0 +1,140 @@
+.login-page {
+  min-height: 100svh;
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--app-surface-bg, #f2f3f5);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+  text-align: left;
+  background: var(--bg);
+}
+
+.login-card h1 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.subtitle {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 15px;
+  color: var(--text-h);
+}
+
+.field input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 16px;
+  color: var(--text-h);
+  background: var(--bg);
+}
+
+.field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.field input[aria-invalid='true'] {
+  border-color: #ef4444;
+}
+
+.password-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.password-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.toggle-password {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-h);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.toggle-password svg {
+  display: block;
+}
+
+.toggle-password:hover {
+  background: var(--social-bg);
+}
+
+.toggle-password:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+button[type='submit'] {
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+button[type='submit']:hover {
+  filter: brightness(0.95);
+}
+
+button[type='submit']:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.api-error {
+  margin-top: 12px;
+}
+
+.success {
+  margin-top: 18px;
+  color: #22c55e;
+  font-weight: 600;
+}

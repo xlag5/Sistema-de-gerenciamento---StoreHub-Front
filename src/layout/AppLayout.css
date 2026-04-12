@@ -1,0 +1,16 @@
+.app-shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: 100svh;
+  width: 100%;
+  box-sizing: border-box;
+  /* Preenche a faixa à esquerda quando o conteúdo principal é mais alto que a viewport */
+  background: #3d434c;
+}
+
+.app-shell-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100svh;
+  overflow: auto;
+}
