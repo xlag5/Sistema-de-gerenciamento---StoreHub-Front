@@ -1,16 +1,17 @@
 .app-shell {
   display: flex;
-  align-items: flex-start;
-  min-height: 100svh;
+  align-items: stretch;
+  min-height: 100vh;
   width: 100%;
-  box-sizing: border-box;
-  /* Preenche a faixa à esquerda quando o conteúdo principal é mais alto que a viewport */
-  background: #3d434c;
+  background: var(--primary); /* Filling the gap if content is shorter than sidebar */
 }
 
 .app-shell-main {
   flex: 1;
   min-width: 0;
-  min-height: 100svh;
-  overflow: auto;
+  background-color: var(--bg-canvas);
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+  animation: fadeIn 0.5s ease-out;
 }

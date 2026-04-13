@@ -1,163 +1,106 @@
 .minhas-compras-page {
-  color-scheme: light;
-  --mc-bg: #f0f2f5;
-  --mc-card: #ffffff;
-  --mc-border: #e5e7eb;
-  --mc-text: #4b5563;
-  --mc-heading: #111827;
-  --mc-primary: #2563eb;
-
-  min-height: 100svh;
   width: 100%;
-  box-sizing: border-box;
-  padding: 28px 24px 48px;
-  background: var(--mc-bg);
-  color: var(--mc-text);
-  text-align: left;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 40px;
+  animation: fadeUp 0.6s ease-out;
 }
 
 .minhas-compras-header {
-  max-width: 880px;
-  margin: 0 auto 24px;
+  margin-bottom: 3rem;
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2rem;
 }
 
 .minhas-compras-titulo {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  color: var(--primary);
   margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--mc-heading);
-  letter-spacing: -0.02em;
 }
 
 .minhas-compras-btn-atualizar {
-  padding: 10px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--mc-heading);
-  background: var(--mc-card);
-  border: 1px solid var(--mc-border);
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: inherit;
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
 }
 
-.minhas-compras-btn-atualizar:hover:not(:disabled) {
-  background: #f9fafb;
-}
-
-.minhas-compras-btn-atualizar:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.minhas-compras-main {
-  max-width: 880px;
-  margin: 0 auto;
-}
-
-.minhas-compras-erro,
-.minhas-compras-aviso {
-  padding: 14px 16px;
-  border-radius: 10px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  margin-bottom: 16px;
-}
-
-.minhas-compras-vazio {
-  margin: 0;
-  padding: 32px 20px;
-  text-align: center;
-  font-size: 0.95rem;
-  color: var(--mc-text);
-  background: var(--mc-card);
-  border: 1px dashed var(--mc-border);
-  border-radius: 12px;
+.minhas-compras-btn-atualizar:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
 }
 
 .minhas-compras-lista {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
 .minhas-compras-card {
-  background: var(--mc-card);
-  border: 1px solid var(--mc-border);
-  border-radius: 12px;
-  padding: 18px 20px;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.04),
-    0 1px 3px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .minhas-compras-card-top {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--mc-border);
-  font-size: 0.9rem;
-  color: var(--mc-text);
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
 }
 
 .minhas-compras-label {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #6b7280;
-}
-
-.minhas-compras-sep {
-  margin: 0 6px;
-  color: #9ca3af;
+  letter-spacing: 1px;
+  color: var(--text-muted);
 }
 
 .minhas-compras-total {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--mc-heading);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--primary);
 }
 
 .minhas-compras-itens {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-}
-
-.minhas-compras-itens th,
-.minhas-compras-itens td {
-  padding: 8px 10px;
-  text-align: left;
-  border-bottom: 1px solid #f3f4f6;
+  border-collapse: separate;
+  border-spacing: 0 4px;
 }
 
 .minhas-compras-itens th {
-  font-weight: 600;
-  color: #374151;
-  background: #f9fafb;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.minhas-compras-itens .num {
-  text-align: right;
-  white-space: nowrap;
+.minhas-compras-itens td {
+  padding: 12px;
+  background: #F9FAFB;
 }
 
-.minhas-compras-sem-itens {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #6b7280;
+.minhas-compras-itens td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.minhas-compras-itens td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+
+.minhas-compras-vazio {
+  text-align: center;
+  padding: 64px 32px;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border);
+  color: var(--text-muted);
 }

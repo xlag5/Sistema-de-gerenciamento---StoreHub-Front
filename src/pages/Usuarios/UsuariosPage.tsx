@@ -190,13 +190,12 @@ export function UsuariosPage() {
   const [filtro, setFiltro] = useState<FiltroLista>('todos')
   const [backendOk, setBackendOk] = useState<boolean | null>(null)
   const [cadastrando, setCadastrando] = useState(false)
-  /** `null` = modo cadastro; caso contrário `PUT /users/:id`. */
   const [editingUserId, setEditingUserId] = useState<number | null>(null)
-  /** Em edição de colaborador: `adm` ou `funcionario` na API. */
   const [perfilColaboradorEdicao, setPerfilColaboradorEdicao] = useState<
     'adm' | 'funcionario' | null
   >(null)
   const [ativoUsuario, setAtivoUsuario] = useState(1)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const validarEmail = (valor: string) => /\S+@\S+\.\S+/.test(valor)
 
@@ -210,7 +209,13 @@ export function UsuariosPage() {
     setSenha('')
     setAtivoUsuario(1)
     setFormErrors({})
+    setIsModalOpen(false)
   }, [])
+
+  const abrirNovoUsuario = () => {
+    resetFormulario()
+    setIsModalOpen(true)
+  }
 
   const iniciarEdicao = (u: UsuarioListaItem) => {
     if (u.userId == null) return
@@ -228,9 +233,9 @@ export function UsuariosPage() {
     setSenha('')
     setAtivoUsuario(u.ativo === 0 ? 0 : 1)
     setFormErrors({})
+    setIsModalOpen(true)
   }
 
-  /** Recarrega a lista a partir de `GET /users`. */
   const recarregarLista = useCallback(async () => {
     try {
       const usersRes = await fetch(`${API_BASE}/users`)
@@ -280,16 +285,10 @@ export function UsuariosPage() {
     return lista.filter((u) => u.userType === filtro)
   }, [lista, filtro])
 
-  /** Valida e envia `POST /users` ou `PUT /users/:id`. */
   const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const isEdit = editingUserId !== null
 
-    /**
-     * `backendOk` começa em `null` até o /health do useEffect responder.
-     * Se o utilizador clicar em Cadastrar antes disso, o código antigo caía
-     * no fluxo offline e nunca fazia POST. Aqui confirmamos o servidor no submit.
-     */
     let servidorDisponivel: boolean
     if (backendOk === true) {
       servidorDisponivel = true
@@ -337,8 +336,8 @@ export function UsuariosPage() {
 
     if (!servidorDisponivel) {
       erros.api = isEdit
-        ? 'Sem conexão com o servidor. A edição só é possível com a API ativa.'
-        : 'Sem conexão com o servidor. Cadastro só é possível com a API ativa.'
+        ? 'Sem conexão com o servidor.'
+        : 'Sem conexão com o servidor.'
     }
 
     setFormErrors(erros)
@@ -399,7 +398,7 @@ export function UsuariosPage() {
       resetFormulario()
     } catch {
       setFormErrors({
-        api: 'Não foi possível conectar ao servidor. Tente novamente.',
+        api: 'Não foi possível conectar ao servidor.',
       })
       setBackendOk(false)
       await recarregarLista()
@@ -410,7 +409,7 @@ export function UsuariosPage() {
 
   const statusMensagem =
     backendOk === false
-      ? 'Sem conexão com o servidor: verifique se a API está em execução.'
+      ? 'Sem conexão com o servidor.'
       : null
 
   return (
@@ -419,181 +418,18 @@ export function UsuariosPage() {
         <div>
           <h1 className="usuarios-titulo">Usuários</h1>
           <p className="usuarios-subtitulo">
-            Cadastre ou edite colaboradores e clientes
+            Gerencie colaboradores e clientes do sistema
           </p>
+        </div>
+        <div className="usuarios-header-actions">
+          <button type="button" className="btn-primary" onClick={abrirNovoUsuario}>
+            <span>+</span> Novo Usuário
+          </button>
         </div>
       </header>
 
-      <div className="usuarios-grid">
-        <section className="card" aria-labelledby="novo-usuario-titulo">
-          <h2 id="novo-usuario-titulo" className="card-titulo">
-            {editingUserId !== null ? 'Editar usuário' : 'Novo usuário'}
-          </h2>
-          <form className="usuarios-form" onSubmit={handleSubmitForm} noValidate>
-            {formErrors.api ? (
-              <p className="erro-campo erro-api" role="alert">
-                {formErrors.api}
-              </p>
-            ) : null}
-            <div className="campo">
-              <label htmlFor="cad-nome">Nome</label>
-              <input
-                id="cad-nome"
-                type="text"
-                placeholder="Ex: Maria Silva"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                aria-invalid={Boolean(formErrors.nome)}
-              />
-              {formErrors.nome ? (
-                <span className="erro-campo">{formErrors.nome}</span>
-              ) : null}
-            </div>
-            <div className="campo">
-              <label htmlFor="cad-email">E-mail</label>
-              <input
-                id="cad-email"
-                type="email"
-                placeholder="maria@empresa.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={Boolean(formErrors.email)}
-              />
-              {formErrors.email ? (
-                <span className="erro-campo">{formErrors.email}</span>
-              ) : null}
-            </div>
-
-            <div className="campo">
-              <label htmlFor="cad-telefone">Telefone</label>
-              <input
-                id="cad-telefone"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                placeholder="(11) 98765-4321"
-                maxLength={16}
-                value={telefone}
-                onChange={(e) =>
-                  setTelefone(aplicarMascaraTelefoneBr(e.target.value))
-                }
-                aria-invalid={Boolean(formErrors.telefone)}
-              />
-              {formErrors.telefone ? (
-                <span className="erro-campo">{formErrors.telefone}</span>
-              ) : null}
-            </div>
-            
-            <div className="campo">
-              <label htmlFor="cad-tipo">Tipo</label>
-              <select
-                id="cad-tipo"
-                value={tipo}
-                onChange={(e) => {
-                  const v = e.target.value as TipoUsuario
-                  setTipo(v)
-                  if (v === 'cliente') {
-                    setPerfilColaboradorEdicao(null)
-                  } else if (perfilColaboradorEdicao === null) {
-                    setPerfilColaboradorEdicao('funcionario')
-                  }
-                }}
-              >
-                <option value="colaborador">Colaborador</option>
-                <option value="cliente">Cliente</option>
-              </select>
-            </div>
-            {editingUserId !== null && tipo === 'colaborador' ? (
-              <div className="campo">
-                <label htmlFor="cad-perfil-colab">Perfil do colaborador</label>
-                <select
-                  id="cad-perfil-colab"
-                  value={perfilColaboradorEdicao ?? 'funcionario'}
-                  onChange={(e) =>
-                    setPerfilColaboradorEdicao(
-                      e.target.value as 'adm' | 'funcionario',
-                    )
-                  }
-                >
-                  <option value="funcionario">Funcionário</option>
-                  <option value="adm">Administrador</option>
-                </select>
-              </div>
-            ) : null}
-            {editingUserId !== null ? (
-              <div className="campo">
-                <label htmlFor="cad-ativo">Conta ativa</label>
-                <select
-                  id="cad-ativo"
-                  value={ativoUsuario === 0 ? '0' : '1'}
-                  onChange={(e) =>
-                    setAtivoUsuario(e.target.value === '0' ? 0 : 1)
-                  }
-                >
-                  <option value="1">Sim</option>
-                  <option value="0">Não</option>
-                </select>
-              </div>
-            ) : null}
-            <div className="campo">
-              <label htmlFor="cad-senha">Senha</label>
-              <input
-                id="cad-senha"
-                type="password"
-                placeholder="Mínimo 6 caracteres"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                aria-invalid={Boolean(formErrors.senha)}
-                autoComplete="new-password"
-              />
-              <p className="hint">
-                {editingUserId !== null
-                  ? 'Deixe em branco para manter a senha atual. Se alterar, mínimo 6 caracteres.'
-                  : 'Obrigatória no cadastro (mínimo 6 caracteres).'}
-              </p>
-              {formErrors.senha ? (
-                <span className="erro-campo">{formErrors.senha}</span>
-              ) : null}
-            </div>
-            <div className="usuarios-form-botoes">
-              {editingUserId !== null ? (
-                <button
-                  type="button"
-                  className="btn-ghost btn-ghost--full"
-                  disabled={cadastrando}
-                  onClick={() => resetFormulario()}
-                >
-                  Cancelar edição
-                </button>
-              ) : null}
-              <button type="submit" className="btn-primary" disabled={cadastrando}>
-                {cadastrando
-                  ? editingUserId !== null
-                    ? 'A guardar...'
-                    : 'A cadastrar...'
-                  : editingUserId !== null
-                    ? 'Salvar alterações'
-                    : 'Cadastrar'}
-              </button>
-            </div>
-            {statusMensagem ? (
-              <p className="status-local">{statusMensagem}</p>
-            ) : null}
-          </form>
-        </section>
-
-        <section aria-labelledby="lista-titulo">
-          <div className="lista-header">
-            <h2 id="lista-titulo">Lista de usuários</h2>
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => void recarregarLista()}
-            >
-              Atualizar lista
-            </button>
-          </div>
-
+      <section className="usuarios-content" aria-labelledby="lista-titulo">
+        <div className="lista-controles">
           <div className="filtros" role="tablist" aria-label="Filtrar lista">
             <button
               type="button"
@@ -611,7 +447,7 @@ export function UsuariosPage() {
               className={`filtro${filtro === 'cliente' ? ' ativo' : ''}`}
               onClick={() => setFiltro('cliente')}
             >
-              Cliente
+              Clientes
             </button>
             <button
               type="button"
@@ -620,7 +456,7 @@ export function UsuariosPage() {
               className={`filtro${filtro === 'adm' ? ' ativo' : ''}`}
               onClick={() => setFiltro('adm')}
             >
-              Administrador
+              Administradores
             </button>
             <button
               type="button"
@@ -629,54 +465,177 @@ export function UsuariosPage() {
               className={`filtro${filtro === 'funcionario' ? ' ativo' : ''}`}
               onClick={() => setFiltro('funcionario')}
             >
-              Funcionário
+              Funcionários
             </button>
           </div>
+          <button
+            type="button"
+            className="btn-ghost btn-small"
+            onClick={() => void recarregarLista()}
+          >
+            Atualizar Lista
+          </button>
+        </div>
 
-          <div className="card lista-card">
-            {listaFiltrada.length === 0 ? (
-              <div className="lista-vazia">
-                Nenhum usuário cadastrado ainda.
-              </div>
-            ) : (
-              <ul className="lista-itens">
-                {listaFiltrada.map((u) => (
-                  <li key={u.id}>
-                    <div className="lista-item-linha">
-                      <div className="lista-item-corpo">
-                        <div className="item-nome">
-                          {u.nome}
-                          <span className={classeBadgeUsuario(u)}>
-                            {rotuloBadgeUsuario(u)}
-                          </span>
-                          {u.ativo === 0 ? (
-                            <span className="badge badge-inativo">Inativo</span>
-                          ) : null}
-                        </div>
-                        <div className="item-meta">{u.email}</div>
-                        {u.telefone ? (
-                          <div className="item-doc">
-                            <span>
-                              Tel.: {formatarTelefoneExibicao(u.telefone)}
-                            </span>
-                          </div>
-                        ) : null}
-                      </div>
-                      <button
-                        type="button"
-                        className="btn-editar-usuario"
-                        onClick={() => iniciarEdicao(u)}
+        <div className="card lista-card">
+          {listaFiltrada.length === 0 ? (
+            <div className="lista-vazia">
+              Nenhum usuário encontrado.
+            </div>
+          ) : (
+            <div className="usuarios-tabela-container">
+              <table className="usuarios-tabela">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                    <th className="acoes">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listaFiltrada.map((u) => (
+                    <tr key={u.id} className="usuario-row">
+                      <td className="col-nome">{u.nome}</td>
+                      <td className="col-email">{u.email}</td>
+                      <td className="col-tel">
+                        {u.telefone ? formatarTelefoneExibicao(u.telefone) : '-'}
+                      </td>
+                      <td className="col-tipo">
+                        <span className={classeBadgeUsuario(u)}>
+                          {rotuloBadgeUsuario(u)}
+                        </span>
+                      </td>
+                      <td className="col-status">
+                         {u.ativo === 0 ? (
+                            <span className="badge badge-error">Inativo</span>
+                          ) : (
+                            <span className="badge badge-success">Ativo</span>
+                          )}
+                      </td>
+                      <td className="col-acoes">
+                        <button
+                          type="button"
+                          className="btn-link"
+                          onClick={() => iniciarEdicao(u)}
+                        >
+                          Editar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Modal de Cadastro / Edição */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-pop-in">
+            <div className="modal-header">
+              <h2>{editingUserId !== null ? 'Editar Usuário' : 'Novo Usuário'}</h2>
+              <button className="btn-close" onClick={() => setIsModalOpen(false)}>&times;</button>
+            </div>
+            <form className="usuarios-form" onSubmit={handleSubmitForm} noValidate>
+                {formErrors.api ? <p className="erro-api">{formErrors.api}</p> : null}
+                
+                <div className="form-grid">
+                  <div className="campo">
+                    <label htmlFor="cad-nome">Nome Completo</label>
+                    <input
+                      id="cad-nome"
+                      type="text"
+                      placeholder="Ex: Maria Silva"
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                    />
+                    {formErrors.nome && <span className="erro-campo">{formErrors.nome}</span>}
+                  </div>
+
+                  <div className="campo">
+                    <label htmlFor="cad-email">E-mail</label>
+                    <input
+                      id="cad-email"
+                      type="email"
+                      placeholder="maria@empresa.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    {formErrors.email && <span className="erro-campo">{formErrors.email}</span>}
+                  </div>
+
+                  <div className="campo">
+                    <label htmlFor="cad-telefone">Telefone</label>
+                    <input
+                      id="cad-telefone"
+                      type="tel"
+                      placeholder="(11) 98765-4321"
+                      value={telefone}
+                      onChange={(e) => setTelefone(aplicarMascaraTelefoneBr(e.target.value))}
+                    />
+                    {formErrors.telefone && <span className="erro-campo">{formErrors.telefone}</span>}
+                  </div>
+
+                  <div className="campo">
+                    <label htmlFor="cad-tipo">Tipo de Conta</label>
+                    <select id="cad-tipo" value={tipo} onChange={(e) => setTipo(e.target.value as TipoUsuario)}>
+                      <option value="colaborador">Colaborador</option>
+                      <option value="cliente">Cliente</option>
+                    </select>
+                  </div>
+
+                  {tipo === 'colaborador' && (
+                    <div className="campo">
+                      <label htmlFor="cad-perfil">Perfil do Colaborador</label>
+                      <select
+                        id="cad-perfil"
+                        value={perfilColaboradorEdicao ?? 'funcionario'}
+                        onChange={(e) => setPerfilColaboradorEdicao(e.target.value as 'adm' | 'funcionario')}
                       >
-                        Editar
-                      </button>
+                        <option value="funcionario">Funcionário</option>
+                        <option value="adm">Administrador</option>
+                      </select>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+                  )}
+
+                  {editingUserId !== null && (
+                    <div className="campo">
+                      <label htmlFor="cad-ativo">Status da Conta</label>
+                      <select value={ativoUsuario} onChange={(e) => setAtivoUsuario(Number(e.target.value))}>
+                        <option value={1}>Ativo</option>
+                        <option value={0}>Inativo</option>
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="campo full-width">
+                    <label htmlFor="cad-senha">Senha</label>
+                    <input
+                      id="cad-senha"
+                      type="password"
+                      placeholder={editingUserId ? "Deixe vazio para manter atual" : "Mínimo 6 caracteres"}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                    />
+                    {formErrors.senha && <span className="erro-campo">{formErrors.senha}</span>}
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn-ghost" onClick={() => setIsModalOpen(false)}>Cancelar</button>
+                  <button type="submit" className="btn-primary" disabled={cadastrando}>
+                    {cadastrando ? 'Salvando...' : 'Confirmar'}
+                  </button>
+                </div>
+            </form>
           </div>
-        </section>
-      </div>
+        </div>
+      )}
     </div>
   )
 }
